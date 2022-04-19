@@ -78,7 +78,9 @@ int main(void)
  *    What is the the maximum value an 8-bit variable can store? What are some
  *    of the benefits and drawbacks of using 8-bit variables in an 8-bit
  *    microcontroller?
- * 
+ * The maximum value of an 8-bit variable can store is 255. 
+ * The benefit of using 8-bit variable with an 8-bit microcontroller is that its easy to use
+ * The drawback of using 8-bit variables is that the arithmetic operations for 8-bit controller only allows output numbers ranging from 0 to 255.
  * 2. The constant 'maxCount' is defined using a declaration similar to that
  *    used for the SW2Count variable, but with the 'const' prefix added in the
  *    declaration. Can you think of some advantages of declaring a constant like

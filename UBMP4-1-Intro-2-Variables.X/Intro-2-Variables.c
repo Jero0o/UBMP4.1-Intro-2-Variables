@@ -143,7 +143,7 @@ int main(void)
  *    but in a more compact form. After adding this code, what is the maximum
  *    value that the SW2Count variable will reach? How does this affect the
  *    operation of LED D4 when SW2 is held?
- * The maximum value SW2count will reach will be 255.
+ * The maximum value SW2count will reach will be 255. This means that while SW2 is held, LED D4 will no longer turn off.
  * 6. The fundamental problem with this program is that pushbutton SW2 is sensed
  *    in each cycle of the loop, and if its state is read as pressed, another
  *    count is added to the SW2Count variable. The program needs to be made to

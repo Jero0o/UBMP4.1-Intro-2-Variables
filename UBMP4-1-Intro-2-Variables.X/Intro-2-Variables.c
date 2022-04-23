@@ -23,11 +23,17 @@
 
 // Program constant definitions
 const unsigned char maxCount = 50;
-
+#define pressed 0
+#define notPressed 1
 // Program variable definitions
 unsigned char SW2Count = 0;
 bool SW2Pressed = false;
-
+unsigned char SW5Count = 0;
+bool SW5Pressed = false;
+unsigned char Loopcycle = 0;
+bool SW4Pressed = false;
+unsigned char SW5BounceCounter = 0;
+unsigned char Held = 0;
 int main(void)
 {
     // Configure oscillator and I/O ports. These functions run once at start-up.
@@ -37,36 +43,35 @@ int main(void)
     // Code in this while loop runs repeatedly.
     while(1)
 	{
-        // Count SW2 button presses
-        if(SW2 == 0)
-        {
-            LED3 = 1;
-           if(SW2Count < 255)
-            {
-                SW2Count += 1;
-            }
-        }
-        else
-        {
-            LED3 = 0;
-        }
-        
-        if(SW2Count >= maxCount)
-        {
-            LED4 = 1;
-        }
-        else
-        {
-            LED4 = 0;
-        }
-        
-        // Reset count and turn off LED D4
-        if(SW3 == 0)
-        {
-            LED4 = 0;
-            SW2Count = 0;
-        }
-        
+        //Switch Bouncer Checker
+      if(SW5 == pressed && Held == 0)
+    {
+        SW5BounceCounter = SW5BounceCounter + 1;
+        Held = 1;
+    }
+    if(SW5 == 1)
+    {
+        Held = 0;
+    }
+    //Display of Switch Bounce
+      if(SW5BounceCounter == 5)
+      {LED6 = 1;}
+      if(SW5BounceCounter == 6)
+      {LED4 = 1;}
+      if(SW5BounceCounter == 7)
+      {LED5 = 1;}
+       if(SW5BounceCounter == 8)
+      {LED3 = 1;}
+     //Reset
+      if(SW4 == pressed)
+      {
+          LED3 = 0;
+          LED4 = 0;
+          LED5 = 0;
+          LED6 = 0;
+          SW5BounceCounter = 0;
+      }
+
         // Add a short delay to the main while loop.
         __delay_ms(10);
         
@@ -236,19 +241,129 @@ int main(void)
  *    second palyer wins. Use a logical condition statement to reset the game
  *    by clearing the count and turning off the LEDs if either SW3 or SW4 is
  *    pressed.
+ *
+ *  //Code in this while loop runs repeatedly.
+    while(1)
+	{
+        // Count new SW2 button presses
+        if(SW2 == pressed && SW2Pressed == false)
+        {
+            LED3 = 1;
+            if(SW2Count < 255)
+            {
+                SW2Count = SW2Count + 1;
+            }
+            SW2Pressed = true;
+        }
+
+        // Clear pressed state if released
+        if(SW2 == notPressed)
+        {
+            LED3 = 0;
+            SW2Pressed = false;
+        }
+        
+        // Count new SW5 button presses
+        if(SW5 == pressed && SW5Pressed == false)
+        {
+            LED6 = 1;
+            if(SW5Count < 255)
+            {
+                SW5Count = SW5Count + 1;
+            }
+            SW5Pressed = true;
+        }
+
+        // Clear pressed state if released
+        if(SW5 == notPressed)
+        {
+            LED6 = 0;
+            SW5Pressed = false;
+        }
+
+        if(SW2Count >= 20)
+        {
+            LED4 = 1;
+        }
+        
+        if(SW5Count >= 20)
+        {
+            LED5 = 1;
+        }
+
+        if(LED4 == 1)
+        {
+            LED6 = 0;
+            LED5 = 0;
+            LED3 = 0;
+            SW5Count = 0;
+        }
+        
+        if(LED5 == 1)
+        {
+            LED3 = 0;
+            LED4 = 0;
+            LED6 = 0;
+            SW2Count = 0;
+        }
+        //Reset count and turn off LED D4 & D5
+        if(SW3 == 0)
+        {
+            LED4 = 0;
+            SW2Count = 0;
+            LED5 = 0;
+            SW5Count = 0;
+        }
  * 
  * 2. Use your knowledge of Boolean variables and logical conditions to simulate
  *    a toggle button. Each new press of the toggle button will 'toggle' an LED
  *    to its opposite state. (Toggle buttons are commonly used as push-on, 
  *    push-off power buttons in digital devices.)
- * 
+ *      //Toggle SW5
+         if(SW5 == pressed && SW5Pressed == false)
+        {
+            LED6 = 1;
+            if(SW5Count < 255)
+            {
+                SW5Count = SW5Count + 1;
+            }
+            SW5Pressed = true;
+        }
+        // Clear pressed state if released (Program Analysis 7)
+        if(SW5 == notPressed)
+        {
+            LED6 = 0;
+            SW5Pressed = false;
+        }
+        if(SW5Count & 1)
+    {
+        LED6 = 1;
+    }
+    else
+    {
+        LED6 = 0;
+    }
  * 3. A multi-function button can be used to enable one action when pressed, and
  *    a second or alternate action when held. A variable that counts loop cycles
  *    can be used to determine how long a button is held (just as the first
  *    program unitentionally did, because of the loop structure). Make a
  *    multifunction button that lights one LED when a button is pressed, and
  *    lights a second LED after the button is held for more that one second.
- * 
+ *      if(SW4 == pressed)
+        {
+            LED5 = 1;
+            Loopcycle = Loopcycle + 1;
+        }
+        if(Loopcycle == 150)
+        {
+            LED3 = 1;
+        }
+        if(SW5 == pressed)
+        {
+            LED5 = 0;
+            LED3 = 0;
+            Loopcycle = 0;
+        }
  * 4. Do your pushbuttons bounce? Switch bounce is the term that describes
  *    switch contacts repeatedly closing and opening before settling in their
  *    final (usually closed) state. Switch bounce in a room's light switch is
@@ -259,9 +374,38 @@ int main(void)
  *    to reset the count and turn off the LEDs so that the test can be repeated.
  *    To determine if your switches bounce, try pressing them at various speeds
  *    and using different amounts of force.
- * 
+ *      //Switch Bouncer Checker
+      if(SW5 == pressed && Held == 0)
+    {
+        SW5BounceCounter = SW5BounceCounter + 1;
+        Held = 1;
+    }
+    if(SW5 == 1)
+    {
+        Held = 0;
+    }
+    //Display of Switch Bounce
+      if(SW5BounceCounter == 5)
+      {LED6 = 1;}
+      if(SW5BounceCounter == 6)
+      {LED4 = 1;}
+      if(SW5BounceCounter == 7)
+      {LED5 = 1;}
+       if(SW5BounceCounter == 8)
+      {LED3 = 1;}
+     //Reset
+      if(SW4 == pressed)
+      {
+          LED3 = 0;
+          LED4 = 0;
+          LED5 = 0;
+          LED6 = 0;
+          SW5BounceCounter = 0;
+      }
  * 5. Did your pushbuttons bounce? Can you think of a technique similar to the
  *    multi-function button that could be implemented to make your program
  *    ignore switch bounces. Multiple switch activations within a 50ms time span
  *    might indicate switch bounce and can be safely ignored.
+ *   Yes, my pushbutton did bounce. A similar way that could be implemented to make the program ignore switches is a code checker. All inputs within a switch will be ignored from a 50ms time span after
+ *   it is pressed. After the check, the switch will proceed to do run what is meant to run.
  */
